@@ -1,0 +1,408 @@
+[
+  {
+    "Timestamp": "2026-08-26T08:01:05",
+    "EventId": 4624,
+    "Computer": "DC01",
+    "Username": "jsmith",
+    "SourceIp": "10.10.10.21",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:02:11",
+    "EventId": 4624,
+    "Computer": "DC01",
+    "SourceIp": "10.10.10.22",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:04:20",
+    "EventId": 4624,
+    "Username": "svc_backup",
+    "SourceIp": "10.10.20.15",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:06:33",
+    "EventId": 4624,
+    "Computer": "WS01",
+    "Username": "jsmith",
+    "SourceIp": "10.10.10.21",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:08:07",
+    "EventId": 4624,
+    "Computer": "WS02",
+    "Username": "asmith",
+    "SourceIp": "10.10.10.22",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:11:44",
+    "EventId": 4624,
+    "Computer": "FILE01",
+    "Username": "jgarcia",
+    "SourceIp": "10.10.10.35",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:15:10",
+    "EventId": 4624,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.10.10",
+    "EventType": "Logon",
+    "Level": "Warning",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:18:12",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "jsmith",
+    "SourceIp": "10.10.10.21",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:19:12",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "jsmith",
+    "SourceIp": "10.10.10.21",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:20:12",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "jsmith",
+    "SourceIp": "10.10.10.21",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:05:00",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:25:30",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:26:00",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:26:30",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:27:00",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:27:30",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:28:00",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:28:30",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on. Possible brute-force activity."
+  },
+  {
+    "Timestamp": "2026-08-26T08:29:50",
+    "EventId": 4624,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.55",
+    "EventType": "Logon",
+    "Level": "Warning",
+    "Message": "An account was successfully logged on following multiple failed attempts."
+  },
+  {
+    "Timestamp": "2026-08-26T08:35:05",
+    "EventId": 4720,
+    "Computer": "DC01",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "AccountCreated",
+    "Level": "Warning",
+    "Message": "A user account was created.",
+    "TargetUser": "temp-admin"
+  },
+  {
+    "Timestamp": "2026-08-26T08:37:22",
+    "EventId": 4728,
+    "Computer": "DC01",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "GroupMembershipChanged",
+    "Level": "Warning",
+    "Message": "A member was added to a security-enabled global group.",
+    "TargetUser": "temp-admin",
+    "TargetGroup": "Domain Admins"
+  },
+  {
+    "Timestamp": "2026-08-26T08:41:03",
+    "EventId": 4719,
+    "Computer": "DC01",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "PolicyChanged",
+    "Level": "Warning",
+    "Message": "System audit policy was changed."
+  },
+  {
+    "Timestamp": "2026-08-26T08:45:18",
+    "EventId": 4104,
+    "Computer": "WS03",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "PowerShell",
+    "Level": "Warning",
+    "Message": "PowerShell script block logging captured a suspicious command.",
+    "ScriptBlock": "Get-ADUser -Filter * | Export-Csv C:\\Temp\\users.csv"
+  },
+  {
+    "Timestamp": "2026-08-26T08:46:02",
+    "EventId": 4688,
+    "Computer": "WS03",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "ProcessCreated",
+    "Level": "Information",
+    "Message": "A new process has been created.",
+    "ProcessName": "powershell.exe",
+    "CommandLine": "powershell.exe -ExecutionPolicy Bypass -File C:\\Temp\\audit.ps1"
+  },
+  {
+    "Timestamp": "2026-08-26T08:50:14",
+    "EventId": 4624,
+    "Computer": "WS01",
+    "Username": "jgarcia",
+    "SourceIp": "10.10.10.35",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T08:54:29",
+    "EventId": 4634,
+    "Computer": "WS01",
+    "Username": "jgarcia",
+    "SourceIp": "10.10.10.35",
+    "EventType": "Logoff",
+    "Level": "Information",
+    "Message": "An account was logged off."
+  },
+  {
+    "Timestamp": "2026-08-26T08:58:09",
+    "EventId": 4624,
+    "Computer": "FILE01",
+    "Username": "asmith",
+    "SourceIp": "10.10.10.22",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:01:45",
+    "EventId": 5140,
+    "Computer": "FILE01",
+    "Username": "asmith",
+    "SourceIp": "10.10.10.22",
+    "EventType": "NetworkShareAccess",
+    "Level": "Information",
+    "Message": "A network share object was accessed.",
+    "ShareName": "\\\\FILE01\\Finance"
+  },
+  {
+    "Timestamp": "2026-08-26T09:05:13",
+    "EventId": 4624,
+    "Computer": "SRV01",
+    "Username": "svc_backup",
+    "SourceIp": "10.10.20.15",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:10:04",
+    "EventId": 4634,
+    "Computer": "SRV01",
+    "Username": "svc_backup",
+    "SourceIp": "10.10.20.15",
+    "EventType": "Logoff",
+    "Level": "Information",
+    "Message": "An account was logged off."
+  },
+  {
+    "Timestamp": "2026-08-26T09:15:00",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "backupadmin",
+    "SourceIp": "10.10.40.77",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:15:40",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "backupadmin",
+    "SourceIp": "10.10.40.77",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:16:20",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "backupadmin",
+    "SourceIp": "10.10.40.77",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:17:00",
+    "EventId": 4625,
+    "Computer": "DC01",
+    "Username": "backupadmin",
+    "SourceIp": "10.10.40.77",
+    "EventType": "FailedLogon",
+    "Level": "Warning",
+    "Message": "An account failed to log on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:22:18",
+    "EventId": 4624,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.77",
+    "EventType": "Logon",
+    "Level": "Warning",
+    "Message": "An account was successfully logged on from an unusual source."
+  },
+  {
+    "Timestamp": "2026-08-26T09:26:33",
+    "EventId": 4672,
+    "Computer": "DC01",
+    "Username": "administrator",
+    "SourceIp": "10.10.40.77",
+    "EventType": "SpecialPrivilegesAssigned",
+    "Level": "Warning",
+    "Message": "Special privileges assigned to new logon."
+  },
+  {
+    "Timestamp": "2026-08-26T09:30:12",
+    "EventId": 4624,
+    "Computer": "WS02",
+    "Username": "mlee",
+    "SourceIp": "10.10.10.41",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:33:47",
+    "EventId": 4634,
+    "Computer": "WS02",
+    "Username": "mlee",
+    "SourceIp": "10.10.10.41",
+    "EventType": "Logoff",
+    "Level": "Information",
+    "Message": "An account was logged off."
+  },
+  {
+    "Timestamp": "2026-08-26T09:37:06",
+    "EventId": 4624,
+    "Computer": "FILE01",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "Logon",
+    "Level": "Information",
+    "Message": "An account was successfully logged on."
+  },
+  {
+    "Timestamp": "2026-08-26T09:41:31",
+    "EventId": 5140,
+    "Computer": "FILE01",
+    "Username": "jdoe",
+    "SourceIp": "10.10.10.50",
+    "EventType": "NetworkShareAccess",
+    "Level": "Information",
+    "Message": "A network share object was accessed.",
+    "ShareName": "\\\\FILE01\\HR"
+  }
+]
