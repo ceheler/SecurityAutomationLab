@@ -91,3 +91,69 @@ Windows Security Log
 - Path validation
 - Support additional Windows Security Event IDs
 - Expand the normalized schema as the SecurityEventAnalyzer model evolves
+
+## event_summary.py
+
+### Purpose
+
+This script reads normalized Windows Security Event data from a JSON file and summarizes the events by EventId and occurrence count.
+
+If an EventId filter is supplied, the script prints detailed information for matching events instead of the overall event summary.
+
+### Input
+
+`-e`, `--events`
+Path to a JSON file containing normalized Windows Security Events.
+
+`-ei`, `--event-id`
+Optional EventId used to filter the input and display matching event details.
+
+### Sample Input With Filtering
+
+```powershell
+python .\scripts\event_summary.py -e .\tests\test_events.json --event-id 4624
+```
+
+Loads `.\tests\test_events.json`, filters for EventId `4624`, and prints detailed information for matching events.
+
+### Sample Output With Filtering
+
+```powershell
+Successfully loaded 40 events from .\tests\test_windows_security_events.json
+
+Results filtered by 4624
+
+Event ID: 4624
+Timestamp: 2026-08-26T08:01:05
+Computer: DC01
+Username: jsmith
+Source IP: 10.10.10.21
+Message: An account was successfully logged on.
+```
+
+### Sample Input Without Filtering
+
+```powershell
+python .\scripts\event_summary.py -e .\tests\test_events.json
+```
+
+Loads `.\tests\test_events.json` and prints a summary showing each EventId and the number of occurrences.
+
+### Sample Output Without Filtering
+
+```powershell
+Successfully loaded 40 events from .\tests\test_windows_security_events.json
+
+Event ID 4104: 1
+Event ID 4624: 12
+Event ID 4625: 15
+Event ID 4634: 3
+Event ID 4672: 1
+Event ID 4688: 1
+Event ID 4719: 1
+Event ID 4720: 1
+Event ID 4728: 1
+Event ID 5140: 2
+
+Skipped 2 events with missing EventId.
+```

@@ -41,7 +41,7 @@
   },
   {
     "Timestamp": "2026-08-26T08:08:07",
-    "EventId": 4624,
+    "EventId": null,
     "Computer": "WS02",
     "Username": "asmith",
     "SourceIp": "10.10.10.22",
@@ -51,7 +51,6 @@
   },
   {
     "Timestamp": "2026-08-26T08:11:44",
-    "EventId": 4624,
     "Computer": "FILE01",
     "Username": "jgarcia",
     "SourceIp": "10.10.10.35",

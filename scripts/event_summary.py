@@ -1,14 +1,17 @@
+"""Summarize and filter normalized Windows Security Event JSON data."""
 import json
 import argparse
 
-def main():
-    parser = argparse.ArgumentParser(description="JSON file parser")
+def main() -> None:
+    parser = argparse.ArgumentParser(
+    description="Analyze normalized Windows Security Events and optionally filter them by Event ID."
+)
     
     parser.add_argument(
         '-e', '--events',
         type=argparse.FileType('r'),
         required=True,
-        help="Path to input JSON file"
+        help="Optional Event ID to filter for"
     )
     
     parser.add_argument(
@@ -44,26 +47,46 @@ def main():
                 for event in events:
                     print_event(event)
         else:    
-            events = count_events(events_list)
-            for key, value in events.items():
+            events, skipped_events = count_events(events_list)
+            for key, value in sorted(events.items()):
                 print(f"Event ID {key}: {value}")
+            if skipped_events > 0:
+                print(f"Skipped {skipped_events} events with missing EventId.")
         
     except json.JSONDecodeError:
         print("Error: The file is not a valid JSON document")
         
-def count_events(events_list):
-    events = dict()
+def count_events(events_list: list[dict]) -> tuple[dict[int, int], int]:
+    """Count Windows Security Events by EventId.
+    Args:
+        events_list: List of Windows Security Event dictionaries.
+
+    Returns:
+        Dictionary mapping each EventId to the number of occurrences.
+    """
+    events = {}
+    skipped_events = 0
     for event in events_list:
         event_id = event.get("EventId")
         if event_id is None:
+            skipped_events += 1
             continue
         if event_id not in events:
             events[event_id] = 1
         else:
             events[event_id] += 1
-    return events
+    return events, skipped_events
 
-def filter_events_by_id(events_list, event_id):
+def filter_events_by_id(events_list: list[dict], event_id: int) -> list[dict]:
+    """Filter Windows Security Events by EventId.
+
+    Args:
+        events_list: List of Windows Security Event dictionaries.
+        event_id: Targeted EventId.
+
+    Returns:
+        events: List of events with an EventId matching event_id.
+    """
     events = []
     for event in events_list:
         target_id = event.get("EventId")
@@ -72,20 +95,24 @@ def filter_events_by_id(events_list, event_id):
         events.append(event)
     return events
 
-def print_event(event):
+def print_event(event: dict[str, object]) -> None:
+    """Print a normalized Windows Security Event to the terminal.
+
+    Args:
+        event: Windows Security Event dictionary.
+    """
     fields = {
-    "Event ID": event.get("EventId"),
-    "Timestamp": event.get("Timestamp"),
-    "Computer": event.get("Computer"),
-    "Username": event.get("Username"),
-    "Source IP": event.get("SourceIp"),
-    "Message": event.get("Message")
+        "Event ID": event.get("EventId"),
+        "Timestamp": event.get("Timestamp"),
+        "Computer": event.get("Computer"),
+        "Username": event.get("Username"),
+        "Source IP": event.get("SourceIp"),
+        "Message": event.get("Message")
     }
     for label, value in fields.items():
         if value is not None:
             print(f"{label}: {value}")
-    print("\n--------------------\n")
-        
+    print("\n--------------------\n")     
         
 if __name__ == "__main__":
     main()
