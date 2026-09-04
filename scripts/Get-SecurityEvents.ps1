@@ -107,4 +107,4 @@ $normalizedEvents = foreach($event in $events)
 }
 
 $normalizedEvents | ConvertTo-Json -Depth 4 | Set-Content -Path $Path -Encoding utf8
-"Exported $(NormalizedEvents.Count) normalized events to $Path" 
+"Exported $($normalizedEvents.Count) normalized events to $Path" 
