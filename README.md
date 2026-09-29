@@ -11,6 +11,7 @@ This script queries Windows Security event logs, normalizes selected events into
 - 4672 Special privileges assigned to new logon
 - 4720 A user account was created
 - 4728 A member was added to a security-enabled group
+- 4732 A member was added to a security-enabled local group
 
 ### Parameters
 All parameters are optional and have default values.
@@ -22,7 +23,7 @@ Number of events to process.
 Default: 100
 - `-EventIds` 
 Specifies which Event IDs to query and normalize.
-Default: 4624, 4625, 4672, 4720, 4728
+Default: 4624, 4625, 4672, 4720, 4728, 4732
 
 ### Requirements
 
@@ -72,6 +73,9 @@ Different Windows Event IDs expose different XML fields. The script maps event-s
 - Message
 - LogName
 - Level
+- TargetDomainName
+- TargetSid
+- MemberSid
 
 Fields that are not applicable to a particular event are exported as null.
 
