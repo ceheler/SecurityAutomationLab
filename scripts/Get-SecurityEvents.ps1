@@ -20,7 +20,7 @@ Param(
     [string]$Path = "$env:USERPROFILE\Downloads\powershell_security_events.json",
     [ValidateRange(1, 5000)]
     [int]$MaxEvents = 100,
-    [int[]]$EventIds = @(4624, 4625, 4672, 4720, 4728)
+    [int[]]$EventIds = @(4624, 4625, 4672, 4720, 4728, 4732)
 )
 
 $events = Get-WinEvent -FilterHashtable @{
@@ -50,9 +50,12 @@ function Convert-WindowsSecurityEvent {
     $Username = $null
     $TargetUser = $null
     $TargetGroup = $null
+    $TargetDomainName = $null
+    $TargetSid = $null
     $SourceIp = $null
     $LogonId = $null
     $Privileges = $null
+    $MemberSid = $null
     switch ($SecurityEvent.Id) {
         4624 {  
             $Username = Get-EventDataValue -Xml $xml -FieldName "SubjectUserName"
@@ -80,7 +83,19 @@ function Convert-WindowsSecurityEvent {
             $Username = Get-EventDataValue -Xml $xml -FieldName "SubjectUserName"
             $TargetUser = Get-EventDataValue -Xml $xml -FieldName "MemberName"
             $TargetGroup = Get-EventDataValue -Xml $xml -FieldName "TargetUserName"
+            $TargetDomainName = Get-EventDataValue -Xml $xml -FieldName "TargetDomainName"
             $LogonId = Get-EventDataValue -Xml $xml -FieldName "SubjectLogonId"
+            $TargetSid = Get-EventDataValue -Xml $xml -FieldName "TargetSid"
+            $MemberSid = Get-EventDataValue -Xml $xml -FieldName "MemberSid"
+        }
+        4732 {
+            $Username = Get-EventDataValue -Xml $xml -FieldName "SubjectUserName"
+            $TargetUser = Get-EventDataValue -Xml $xml -FieldName "MemberName"
+            $TargetGroup = Get-EventDataValue -Xml $xml -FieldName "TargetUserName"
+            $TargetDomainName = Get-EventDataValue -Xml $xml -FieldName "TargetDomainName"
+            $TargetSid = Get-EventDataValue -Xml $xml -FieldName "TargetSid"
+            $LogonId = Get-EventDataValue -Xml $xml -FieldName "SubjectLogonId"
+            $MemberSid = Get-EventDataValue -Xml $xml -FieldName "MemberSid"
         }
     }
 
@@ -97,6 +112,9 @@ function Convert-WindowsSecurityEvent {
         Privileges = $Privileges
         TargetGroup = $TargetGroup
         LogonId = $LogonId
+        TargetDomainName = $TargetDomainName
+        MemberSid = $MemberSid
+        TargetSid = $TargetSid
     }
     return $normalizedEvent
 }
