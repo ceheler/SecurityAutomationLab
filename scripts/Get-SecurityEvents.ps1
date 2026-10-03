@@ -56,18 +56,21 @@ function Convert-WindowsSecurityEvent {
     $LogonId = $null
     $Privileges = $null
     $MemberSid = $null
+    $EventType = $null
     switch ($SecurityEvent.Id) {
         4624 {  
             $Username = Get-EventDataValue -Xml $xml -FieldName "SubjectUserName"
             $TargetUser = Get-EventDataValue -Xml $xml -FieldName "TargetUserName"
             $SourceIp = Get-EventDataValue -Xml $xml -FieldName "IpAddress"
             $LogonId = Get-EventDataValue -Xml $xml -FieldName "TargetLogonId"
+            $EventType = "SuccessfulAuthentication"
         }
         4625 {
             $Username = Get-EventDataValue -Xml $xml -FieldName "TargetUserName"
             $TargetUser = Get-EventDataValue -Xml $xml -FieldName "TargetUserName"
             $SourceIp = Get-EventDataValue -Xml $xml -FieldName "IpAddress"
             $LogonId = Get-EventDataValue -Xml $xml -FieldName "SubjectLogonId"
+            $EventType = "FailedAuthentication"
         }
         4672 {
             $Username = Get-EventDataValue -Xml $xml -FieldName "SubjectUserName"
@@ -102,6 +105,7 @@ function Convert-WindowsSecurityEvent {
     $normalizedEvent = [PSCustomObject]@{
         Timestamp = $SecurityEvent.TimeCreated.ToString("o")
         EventId = $SecurityEvent.Id
+        EventType = $EventType
         Computer = $SecurityEvent.MachineName
         LogName = $SecurityEvent.LogName
         Level = $SecurityEvent.LevelDisplayName

@@ -92,6 +92,7 @@ Different Windows Event IDs expose different XML fields. The script maps event-s
 
 - Timestamp
 - EventId
+- EventType
 - Computer
 - Username
 - TargetUser
@@ -106,11 +107,20 @@ Different Windows Event IDs expose different XML fields. The script maps event-s
 - TargetSid
 - MemberSid
 
+Authentication events are additionally mapped to source-independent semantic event types:
+
+- Event ID `4624` → `SuccessfulAuthentication`
+- Event ID `4625` → `FailedAuthentication`
+
+This allows downstream detection logic to analyze authentication behavior without depending directly on Windows-specific Event IDs.
+
 Fields that are not applicable to a particular event are exported as `null`.
 
 ### SecurityEventAnalyzer Integration
 
 The exported JSON schema is designed to be compatible with the SecurityEventAnalyzer C# project.
+
+Windows authentication events are normalized to source-independent `EventType` values so behavioral detections can operate on the same semantic fields used by other telemetry sources, such as Linux SSH logs.
 
 ```text
 Windows Security Log
@@ -129,6 +139,7 @@ detection findings
 - Path validation
 - Support additional Windows Security Event IDs
 - Expand the normalized schema as the SecurityEventAnalyzer model evolves
+- Expand semantic `EventType` mapping to additional Windows Security Events
 
 ---
 
