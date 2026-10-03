@@ -11,7 +11,6 @@ The project currently supports Windows Security Event collection through PowerSh
 This script queries Windows Security event logs, normalizes selected events into a consistent schema, and exports the results as JSON for downstream analysis with SecurityEventAnalyzer.
 
 ### Supported Event IDs
-<<<<<<< HEAD
 
 - 4624 — Successful Logon
 - 4625 — Failed Logon
@@ -26,12 +25,10 @@ This script queries Windows Security event logs, normalizes selected events into
 - 4720 A user account was created
 - 4728 A member was added to a security-enabled group
 - 4732 A member was added to a security-enabled local group
->>>>>>> 5e1ef3294dcfa810b511fb15e937f21d53a14192
 
 ### Parameters
 
 All parameters are optional and have default values.
-<<<<<<< HEAD
 
 - `-Path`
   Path for the exported JSON file.
@@ -45,16 +42,15 @@ All parameters are optional and have default values.
   Specifies which Event IDs to query and normalize.
   Default: `4624, 4625, 4672, 4720, 4728, 4732`
 =======
-- `-Path` 
+- `-Path`
 Path for the exported JSON file.
 Default: `$env:USERPROFILE\Downloads\powershell_security_events.json`
-- `-MaxEvents` 
-Number of events to process. 
+- `-MaxEvents`
+Number of events to process.
 Default: 100
-- `-EventIds` 
+- `-EventIds`
 Specifies which Event IDs to query and normalize.
 Default: 4624, 4625, 4672, 4720, 4728, 4732
->>>>>>> 5e1ef3294dcfa810b511fb15e937f21d53a14192
 
 ### Requirements
 
