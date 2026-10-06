@@ -1,8 +1,29 @@
 # SecurityAutomationLab
 
-SecurityAutomationLab contains tools for collecting, normalizing, and analyzing security telemetry from multiple operating systems.
+SecurityAutomationLab contains tools for collecting and normalizing security telemetry from multiple operating systems for downstream behavioral detection
 
-The project currently supports Windows Security Event collection through PowerShell and Linux SSH authentication normalization through Python. Normalized events are intended for downstream behavioral detection using SecurityEventAnalyzer.
+The project currently supports:
+
+- Windows Security Event collection and normalization through PowerShell
+- Linux SSH authentication normalization through Python
+- Linux UFW network-block normalization through Python
+
+Normalized events use common semantic fields where possible and are designed for downstream analysis by SecurityEventAnalyzer
+
+## Architecture
+
+SecurityAutomationLab separates source-specific collection and parsing from
+downstream detection logic.
+
+```text
+Windows Security Log → Get-SecurityEvents.ps1 ┐
+Linux SSH logs      → ssh_normalizer.py       ├→ normalized SecurityEvent JSON
+Linux UFW logs      → ufw_normalizer.py       ┘
+                                                          ↓
+                                                 SecurityEventAnalyzer
+                                                          ↓
+                                                   SecurityFindings
+```
 
 ## Get-SecurityEvents.ps1
 
@@ -18,13 +39,7 @@ This script queries Windows Security event logs, normalizes selected events into
 - 4720 — A user account was created
 - 4728 — A member was added to a security-enabled global group
 - 4732 — A member was added to a security-enabled local group
-=======
-- 4624 Successful Logon
-- 4625 Failed Logon
-- 4672 Special privileges assigned to new logon
-- 4720 A user account was created
-- 4728 A member was added to a security-enabled group
-- 4732 A member was added to a security-enabled local group
+
 
 ### Parameters
 
@@ -41,16 +56,7 @@ All parameters are optional and have default values.
 - `-EventIds`
   Specifies which Event IDs to query and normalize.
   Default: `4624, 4625, 4672, 4720, 4728, 4732`
-=======
-- `-Path`
-Path for the exported JSON file.
-Default: `$env:USERPROFILE\Downloads\powershell_security_events.json`
-- `-MaxEvents`
-Number of events to process.
-Default: 100
-- `-EventIds`
-Specifies which Event IDs to query and normalize.
-Default: 4624, 4625, 4672, 4720, 4728, 4732
+
 
 ### Requirements
 
@@ -348,27 +354,114 @@ The script reports separate counters for JSON parsing failures, SSH message pars
 
 ### SecurityEventAnalyzer Integration
 
-Integration with SecurityEventAnalyzer is currently in development.
+Normalized SSH telemetry has been validated with SecurityEventAnalyzer.
 
-The intended workflow is:
+The shared `EventType` values allow the same behavioral authentication detection logic to operate against normalized Windows and Linux SSH events.
 
 ```text
 Linux journal / sshd
         ↓
 ssh_normalizer.py
         ↓
-normalized JSON
+normalized SecurityEvent JSON
         ↓
 SecurityEventAnalyzer
         ↓
-detection findings
+shared behavioral detections
 ```
-
-The goal is for source-specific collectors and normalizers to produce a common event representation that can be consumed by shared behavioral detection logic.
 
 ### Future Improvements
 
 - Path validation
 - Additional SSH authentication formats
 - Additional Linux authentication event types
-- SecurityEventAnalyzer integration
+
+## ufw_normalizer.py
+
+### Purpose
+
+This script reads Linux UFW firewall telemetry exported from `journalctl` in JSONL format, parses blocked network connections, and exports normalized JSON for downstream analysis with SecurityEventAnalyzer.
+
+The normalizer separates Linux/UFW-specific log formatting from downstream network detection logic.
+
+### Supported Events
+
+- UFW blocked network connections containing `[UFW BLOCK]`
+
+### Parameters
+
+All parameters are required.
+
+- `--input_file` Path to the JSONL file exported from `journalctl`
+
+- `--output_file` Path for the normalized JSON output file
+
+### Example Source Collection
+
+```bash
+sudo journalctl -b -k -g "UFW BLOCK" -o json > ~/logs/ufw_block_raw.jsonl
+```
+
+### Example Usage
+
+```powershell
+python .\ufw_normalizer.py --input_file .\ufw_block_raw.jsonl --output_file .\ufw_normalized.json
+```
+
+### Normalized Schema
+
+Relevant UFW records are normalized into the following fields:
+
+- Timestamp
+- Computer
+- Service
+- EventType
+- SourceIp
+- SourcePort
+- DestinationIp
+- DestinationPort
+- Protocol
+
+Blocked connections have the following fields strictly assigned
+
+- `EventType = "NetworkConnectionBlocked"`
+- `Service = "UFW"`
+
+### SecurityEventAnalyzer Integration
+
+Normalized UFW telemetry has been validated with the SecurityEventAnalyzer `PortScanDetector`.
+
+The detector groups blocked connections by source IP, destination IP, and protocol and detects four or more unique destination ports within a sliding one-minute window.
+
+```text
+Linux kernel / UFW
+        ↓
+journalctl JSONL
+        ↓
+ufw_normalizer.py
+        ↓
+normalized SecurityEvent JSON
+        ↓
+SecurityEventAnalyzer
+        ↓
+PortScanDetector
+```
+
+### Validation
+
+The complete pipeline has been validated using controlled Nmap traffic against an isolated Ubuntu server host
+
+Boundary testing included:
+
+- 3 unique blocked destination ports -> no finding
+- 4 unique blocked destination ports -> finding
+- 5 unique blocked destination ports -> finding
+- Repeated ports without 4 unique destinations -> no finding
+- Same source IP targeting different destination hosts -> no finding
+- Events outside one-minute window -> no finding
+
+### Future Improvements
+
+- Path validation
+- Support for additional firewall telemetry
+- Add normalization support for Windows Firewall network-block telemetry
