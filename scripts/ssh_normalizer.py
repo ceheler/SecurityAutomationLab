@@ -4,8 +4,7 @@ import re
 from datetime import datetime, timezone
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Normalize SSH logs"
-)
+    parser = argparse.ArgumentParser(description="Normalize SSH logs")
     
     parser.add_argument(
         '--input_file',
