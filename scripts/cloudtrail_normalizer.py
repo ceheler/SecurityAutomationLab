@@ -15,7 +15,7 @@ def main() -> None:
         "--output-file",
         type = str,
         required = True,
-        help = "Path to ouput normalized JSON file"
+        help = "Path to output normalized JSON file"
     )
 
     args = parser.parse_args()
