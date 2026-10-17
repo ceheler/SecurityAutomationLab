@@ -1,0 +1,44 @@
+{
+	"Records": [
+		{
+			"userIdentity": {
+				"type": "AssumedRole",
+				"sessionContext": {
+					"sessionIssuer": {
+						"userName": "TerraformExecutionRole"
+					}
+				}
+			},
+			"eventTime": "2026-10-15T12:00:00Z",
+			"eventSource": "ec2.amazonaws.com",
+			"eventName": "TerminateInstances",
+			"sourceIPAddress": "192.0.2.10",
+			"resources": [
+				{
+					"type": "AWS::EC2::Instance",
+					"ARN": "arn:aws:ec2:us-west-2:123456789012:instance/i-0123456789abcdef0"
+				}
+			]
+		},
+		{
+			"userIdentity": {
+				"type": "AssumedRole",
+				"sessionContext": {
+					"sessionIssuer": {
+						"userName": "TerraformExecutionRole"
+					}
+				}
+			},
+			"eventTime": "2026-10-15T12:00:30Z",
+			"eventSource": "ec2.amazonaws.com",
+			"eventName": "DeleteVpc",
+			"sourceIPAddress": "192.0.2.10",
+			"resources": [
+				{
+					"type": "AWS::EC2::VPC",
+					"ARN": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-0123456789abcdef0"
+				}
+			]
+		}
+	]
+}

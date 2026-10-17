@@ -1,12 +1,14 @@
 # SecurityAutomationLab
 
-SecurityAutomationLab contains tools for collecting and normalizing security telemetry from multiple operating systems for downstream behavioral detection
+SecurityAutomationLab contains tools for collecting and normalizing security telemetry from Windows, Linux, and AWS environments for downstream behavioral detection.
 
 The project currently supports:
 
 - Windows Security Event collection and normalization through PowerShell
 - Linux SSH authentication normalization through Python
 - Linux UFW network-block normalization through Python
+- AWS CloudTrail normalization through Python
+- AWS VPC Flow Logs normalization through Python
 
 Normalized events use common semantic fields where possible and are designed for downstream analysis by SecurityEventAnalyzer
 
@@ -16,9 +18,11 @@ SecurityAutomationLab separates source-specific collection and parsing from
 downstream detection logic.
 
 ```text
-Windows Security Log → Get-SecurityEvents.ps1 ┐
-Linux SSH logs      → ssh_normalizer.py       ├→ normalized SecurityEvent JSON
-Linux UFW logs      → ufw_normalizer.py       ┘
+Windows Security Log → Get-SecurityEvents.ps1   ┐
+Linux SSH logs      → ssh_normalizer.py         |
+Linux UFW logs      → ufw_normalizer.py         |
+AWS CloudTrail logs → cloudtrail_normalizer.py  ├→ normalized SecurityEvent JSON
+AWS VPC Flow logs   → vpc_flowlog_normalizer.py ┘
                                                           ↓
                                                  SecurityEventAnalyzer
                                                           ↓
@@ -146,6 +150,92 @@ detection findings
 - Support additional Windows Security Event IDs
 - Expand the normalized schema as the SecurityEventAnalyzer model evolves
 - Expand semantic `EventType` mapping to additional Windows Security Events
+
+---
+
+## cloudtrail_normalizer.py
+
+### Purpose
+
+This script processes AWS CloudTrail telemetry in JSON format, extracts relevant API activity and identity information, and exports normalized JSON for downstream analysis with SecurityEventAnalyzer.
+
+The normalizer locates identity programmatically using the following preference sessionIssuer.userName -> userIdentity.userName -> userIdentity.principalId -> userIdentity.arn finally assigning `None` if the preferred fields do not exist.
+
+### Supported Input
+
+Exported CloudTrail logs in JSON format as well as single event JSON files.
+
+### Parameters
+
+All parameters are required. No defaults are provided.
+
+- `--input-file`
+  Path to the input JSON file exported from CloudTrail.
+
+- `--output-file`
+  Path for the normalized JSON output file.
+
+### Normalized Output
+
+CloudTrail events are converted into a consistent output schema containing:
+
+- Timestamp
+- Service -> hardset to `CloudTrail`
+- EventType -> hardset to `CloudApiCall`
+- Action
+- Username
+- SourceIp
+- ResourceType
+- ResourceId
+
+`Action` is set to the action reported by CloudTrail for downstream analysis.
+
+`ResourceId` extracts the final resource identifier from the AWS ARN, removing the preceding ARN information to provide a concise identifier for downstream analysis.
+
+Examples:
+
+- `vpc-0123456789abcdef0`
+- `i-0123456789abcdef0`
+
+### Error Handling
+
+The normalizer handles several malformed-input conditions without terminating processing of the remaining telemetry:
+
+- Invalid input file type
+- Valid JSON with an unexpected top-level structure
+- Missing or invalid fields
+- Incomplete records are skipped over without stopping execution
+
+### SecurityEventAnalyzer Integration
+
+Normalized CloudTrail telemetry has been validated with SecurityEventAnalyzer.
+
+The shared `Action` values allow the detection logic to operate against normalized AWS CloudTrail events.
+
+```text
+CloudTrail exported logs JSON
+        ↓
+cloudtrail_normalizer.py
+        ↓
+normalized SecurityEvent JSON
+        ↓
+SecurityEventAnalyzer
+        ↓
+TerminateInstances / DeleteVpc detections
+```
+
+### Example Usage
+
+```bash
+python3 scripts/cloudtrail_normalizer.py \
+    --input-file tests/aws_cloudtrail_destructive.json \
+    --output-file /tmp/cloudtrail-destructive-normalized.json
+```
+The normalized output is then run through `SecurityEventAnalyzer` as outlined in its documentation with the following command:
+
+```bash
+dotnet run /tmp/vpc-flowlog-normalized.json
+```
 
 ---
 
@@ -465,3 +555,115 @@ Boundary testing included:
 - Path validation
 - Support for additional firewall telemetry
 - Add normalization support for Windows Firewall network-block telemetry
+
+---
+
+## vpc_flowlog_normalizer.py
+
+### Purpose
+
+This script processes AWS VPC Flow Logs in plain-text format, extracts relevant network connection metadata, and exports normalized JSON for downstream analysis with SecurityEventAnalyzer.
+
+### Supported Input
+
+The script accepts plain-text files containing AWS VPC Flow Log records in the default 14-field, space-delimited format.
+Each line represents one flow log record. Records that do not contain exactly 14 fields are skipped without interrupting processing of the remaining records.
+
+Only records with an action of `REJECT` are normalized. Records with an action of `ACCEPT` are ignored.
+
+### Parameters
+
+All parameters are required.
+
+- `--input-file` Path to the plain-text AWS Flow Log file
+
+- `--output-file` Path for the normalized JSON output file
+
+### Normalized Output
+
+Raw AWS VPC Flow Logs are converted into a consistent output schema containing:
+
+- Timestamp
+- Service -> hardset to `VPCFlowLogs`
+- EventType -> hardset to `NetworkConnectionBlocked`
+- SourceIp
+- DestinationIp
+- DestinationPort
+- Protocol
+
+`Timestamp` is ingested as Unix time and converted to ISO 8601 to match what is expected in SecurityEventAnalyzer
+
+`Protocol` is converted from an integer using IANA standards. The normalizer supports TCP (6), UDP (17), and ICMP (1). Records containing unsupported protocol numbers or nonnumeric destination ports are skipped.
+
+### Error Handling
+
+The normalizer skips unsupported, irrelevant, or malformed records without interrupting the processing of remaining valid telemetry.
+
+Records are skipped under the following conditions:
+
+- Records containing fewer or more than 14 fields
+- `ACCEPT` traffic (intentionally excluded)
+- Unsupported protocol numbers
+- Invalid or nonnumeric destination ports
+- Invalid or nonnumeric Unix timestamps
+- Nonnumeric protocol fields
+
+### SecurityEventAnalyzer Integration
+
+Normalized VPC Flow Logs have been validated with SecurityEventAnalyzer.
+
+The shared `SecurityEvent` schema allows the existing `PortScanDetector` to analyze normalized network telemetry from both AWS VPC Flow Logs and Linux UFW. Both normalizers classify blocked network connections using `EventType = "NetworkConnectionBlocked"`, allowing the detector to operate independently of the original telemetry source.
+
+`PortScanDetector` generates a Medium-severity finding under the flowing conditions
+
+- 4 or more distinct blocked destination ports
+- When SourceIp, DestinationIp and Protocol are all the same
+- Within a 1 minute of each other
+
+```text
+Raw VPC Flow Log plaintext file
+        ↓
+vpc_flowlog_normalizer.py
+        ↓
+normalized SecurityEvent JSON
+        ↓
+SecurityEventAnalyzer
+        ↓
+Port Scan detections
+```
+
+### Example Usage
+
+```bash
+python3 scripts/vpc_flowlog_normalizer.py \
+    --input-file tests/aws_vpc_flow_logs.txt \
+    --output-file /tmp/vpc-flowlog-normalized.json
+```
+
+The normalized output is then run through `SecurityEventAnalyzer` as outlined in its documentation with the following command:
+
+```bash
+dotnet run /tmp/vpc-flowlog-normalized.json
+```
+
+### Example Output
+
+```text
+Analyzing /tmp/vpc-flowlog-normalized.json
+
+Log event summary
+
+===================
+
+Processed 4 events
+
+
+Port Scan Detection
+4 distinct blocked destination ports detected within a 1 minute window.
+===================
+Severity: Medium
+Timestamp: 10/15/2026 5:00:00 AM
+Source IP: 192.0.2.10
+Destination IP: 198.51.100.20
+Count: 4
+```
